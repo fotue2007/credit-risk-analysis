@@ -12,6 +12,7 @@ df = pd.read_csv("credit_risk_dataset.csv")
 print(df.head())
             # etude du type des colonnes colonne 
 print(df.info())
+print(df.shape)
             # recuperation des colone qu'on va utiliser 
 df = df [["person_age","person_income" ,"person_emp_length" ,"loan_amnt" ,"loan_int_rate","loan_status" ,"cb_person_default_on_file"]]
 nouveaux_noms = [
