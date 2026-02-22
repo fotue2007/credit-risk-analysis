@@ -36,13 +36,13 @@ Le projet se décompose en plusieurs étapes clés :
 
 
 
-	**-Language :** Python
+	-Language : Python
 
-	**-Data Manipulation :** Pandas , Numpy 
+	-Data Manipulation : Pandas , Numpy 
 
-	**-Visualisation :** Matplotlib , Seaborn
+	-Visualisation : Matplotlib , Seaborn
 
-	**-Machine Learning :** Scikit-learn
+	-Machine Learning : Scikit-learn
 
-	**-Environnement :** VS Code
+	-Environnement : VS Code
 
