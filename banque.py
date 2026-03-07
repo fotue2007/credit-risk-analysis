@@ -99,21 +99,40 @@ plt.show()
 
 
 #machine learning 
-#1- division des donnees en respectant les proportion du data set 
-X=df[[ "age_emprunteur", "revenu_annuel",  "anciennete_pro", "montant_credit", "taux_interet", "antecedent_defaut"]]
-y=df["statut_pret"]
-X_train ,X_test , y_train ,y_test = train_test_split(X,y,test_size=0.2,shuffle=True,stratify=y,random_state=42)
+# --- IMPORT SUPPLEMENTAIRE POUR LE SCALING ET L'EXPORT ---
+from sklearn.preprocessing import StandardScaler
+import joblib
 
-#2-instantiation du modele de regression 
+# 1- division des donnees
+X = df[["age_emprunteur", "revenu_annuel", "anciennete_pro", "montant_credit", "taux_interet", "antecedent_defaut"]]
+y = df["statut_pret"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, stratify=y, random_state=42)
+
+
+# On initialise le scaler qui va permettre de normaliser les donner (Les mettre a la meme echelle )
+scaler = StandardScaler()
+
+# On "fit" et on "transform" sur le train, et on "transform" seulement sur le test
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 2- instantiation et entraînement sur les données SCALÉES
 model_credit = LogisticRegression()
+model_credit.fit(X_train_scaled, y_train)
 
-model_credit.fit(X_train,y_train)
-#3-Prediction
-y_pred = model_credit.predict(X_test)
-y_prob = model_credit.predict_proba(X_test)[:,1]
+# --- ÉTAPE DE SAUVEGARDE POUR LE DÉPLOIEMENT ---
+# On enregistre le modèle ET le scaler pour pouvoir les réutiliser dans l'appli web
+joblib.dump(model_credit, 'model_credit.joblib')
+joblib.dump(scaler, 'scaler_credit.joblib')
+print("\nModèle et Scaler sauvegardés avec succès !")
 
-# --- 5. ÉVALUATION (Rapport de classification) ---
-print("Rapport de Classification :")
+# 3- Prediction (utiliser X_test_scaled !)
+y_pred = model_credit.predict(X_test_scaled)
+y_prob = model_credit.predict_proba(X_test_scaled)[:,1]
+
+# --- 5. ÉVALUATION ---
+print("\nRapport de Classification (avec Scaling) :")
 print(classification_report(y_test, y_pred))
 
 # --- 6. GRAPHIQUE : MATRICE DE CONFUSION ---
@@ -121,10 +140,12 @@ plt.figure(figsize=(8, 6))
 cm = confusion_matrix(y_test, y_pred)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Remboursé (0)', 'Défaut (1)'])
 disp.plot(cmap='Blues', values_format='d')
-plt.title("Matrice de Confusion")
+plt.title("Matrice de Confusion (Données Scalées)")
+plt.savefig("Matrice de confusion")
 plt.show()
 
-# --- 7. GRAPHIQUE : COURBE ROC (Performance globale) ---
+
+# --- 7. GRAPHIQUE : COURBE ROC ---
 fpr, tpr, thresholds = roc_curve(y_test, y_prob)
 roc_auc = auc(fpr, tpr)
 
@@ -133,6 +154,6 @@ plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.
 plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
 plt.xlabel('Taux de Faux Positifs')
 plt.ylabel('Taux de Vrais Positifs')
-plt.title('Courbe ROC (Receiver Operating Characteristic)')
+plt.title('Courbe ROC (Performance avec Scaling)')
 plt.legend(loc="lower right")
 plt.show()
