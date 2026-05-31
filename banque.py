@@ -1,5 +1,6 @@
 # projet de machine learning 
 import pandas as pd 
+import streamlit as st
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error ,classification_report,confusion_matrix,ConfusionMatrixDisplay,roc_curve, auc
@@ -7,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt 
 # etude des donnees du dataset credit_risk_dataset.csv  
 # creation du dataframme 
+
 df = pd.read_csv("credit_risk_dataset.csv")
             # 5 premiere ligne du tableau 
 print(df.head())
@@ -61,6 +63,7 @@ plt.title("Répartition des Classes (Variable Cible : statut_pret)")
 plt.show()
 
 # --- 2. RÉPARTITION DE L'ANCIENNETÉ (HISTOGRAMME) ---
+
 plt.figure(figsize=(10, 6))
 sns.histplot(df["anciennete_pro"], bins=20, kde=True, color="skyblue")
 plt.title("Distribution de l'ancienneté professionnelle")
@@ -70,6 +73,7 @@ plt.show()
 
 
 # --- GRAPHIQUE 1 : Matrice de Corrélation ---
+
 plt.figure(figsize=(10, 8))
 sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
 plt.title('Corrélation entre les variables de crédit')
@@ -77,6 +81,7 @@ plt.savefig('correlation_matrix.png')
 plt.show()
 
 # --- GRAPHIQUE 2 : Répartition du revenu selon le statut du prêt ---
+
 plt.figure(figsize=(8, 6))
 sns.boxplot(x='statut_pret', y='revenu_annuel', data=df)
 plt.title('Distribution des Revenus par Statut de Prêt')
@@ -84,6 +89,7 @@ plt.savefig('revenu_vs_statut.png')
 plt.show()
 
 # --- GRAPHIQUE 3 : Taux d'intérêt et défaut ---
+
 plt.figure(figsize=(8, 6))
 sns.kdeplot(data=df, x="taux_interet", hue="statut_pret", fill=True)
 plt.title('Impact du Taux d\'intérêt sur le Risque de Défaut')
@@ -91,6 +97,7 @@ plt.savefig('taux_distribution.png')
 plt.show()
 
 # --- GRAPHIQUE 4 : Antécédents de défaut ---
+
 plt.figure(figsize=(8, 6))
 sns.countplot(x='antecedent_defaut', hue='statut_pret', data=df)
 plt.title('Influence des Antécédents sur le Statut Actuel')
