@@ -37,7 +37,23 @@ donnees_scaled = scaler.transform(donnees)
 prediction = model.predict(donnees_scaled)[0]
 probabilite_defaut = model.predict_proba(donnees_scaled)[0][1]
 
+df_coef = pd.DataFrame({
+    "Variable": feature_names,
+    "Coefficient": coefficients,
+    "Impact": ["🔴 Augmente risque" if c > 0 else "🟢 Diminue risque" for c in coefficients]
+})
 
+# 5. Trier par importance (valeur absolue)
+df_coef["Importance"] = df_coef["Coefficient"].abs()
+df_coef = df_coef.sort_values("Importance", ascending=False)
+
+
+# 6. Afficher
+print("\n" + "="*70)
+print("📊 IMPACT DES VARIABLES SUR LA PROBABILITÉ DE DÉFAUT")
+print("="*70)
+print(df_coef.to_string(index=False))
+print("="*70)
 print("\n" + "=" * 60)
 print("  RÉSULTAT DE L'ÉVALUATION")
 print("=" * 60)
